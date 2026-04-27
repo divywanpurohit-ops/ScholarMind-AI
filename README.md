@@ -1,47 +1,54 @@
-# SCHOLARMIND AI
-The Ultimate Academic Research Operating System.
+# ScholarMind AI - The Ultimate Academic Research OS
 
-## Features
-- **Project Workspace**: Upload and analyze PDFs, DOCX, and datasets.
-- **Translator Lab**: Academic-grade translations preserving formulas and citations.
-- **Writing Intelligence**: Paraphrase, check grammar, and humanize academic text.
-- **Data Analysis**: Clean data, generate descriptive stats, and visualize charts.
-- **Video & PPT Studio**: Auto-generate animated explainers and conference slides.
-- **Visualization Lab**: Generate biological pathways and mind maps.
-- **Prompt Studio & AI Detector**: Engineer prompts and detect AI-generated text.
+ScholarMind AI is a comprehensive, premium academic research platform designed to streamline the research lifecycle through advanced AI integration.
 
-## Tech Stack
-- **Frontend**: Next.js (App Router), Vanilla CSS (Glassmorphism design system)
-- **Backend**: Node.js, Express
-- **Database**: MongoDB
+## 🚀 Key Modules
 
-## Localhost Setup Guide
+### 1. Research Intelligence Lab (Pro)
+Deep audit system connected to PubMed, Google Scholar, and Crossref.
+- Contradiction Detection
+- Novelty Assessment
+- Strategic Publication Roadmap
 
-### Option 1: One-Click Docker Deployment
-1. Ensure you have [Docker](https://www.docker.com/) and Docker Compose installed.
-2. Clone the repository.
-3. Copy `.env.example` to `.env` and fill in your API keys (optional, for real AI features).
-4. Run:
-   ```bash
-   docker-compose up --build
-   ```
-5. Open `http://localhost:3000` in your browser.
+### 2. Unlimited Project Workspace
+Collaborative environment for multi-source research.
+- Support for PDF, DOI, URLs, Images, and Text
+- Unlimited Page Addition
+- Smart Data & Citation Extraction
 
-### Option 2: Manual Setup
-1. **Start MongoDB**: Ensure a local instance of MongoDB is running on port `27017`.
-2. **Backend Setup**:
-   ```bash
-   cd backend
-   npm install
-   npm run dev
-   ```
-3. **Frontend Setup**:
-   ```bash
-   cd frontend
-   npm install
-   npm run dev
-   ```
-4. Open `http://localhost:3000` in your browser.
+### 3. Voice Intelligence Lab
+Natural language interaction with research data.
+- Multilingual Dictation (EN, HI, FR, DE)
+- AI Read-Aloud (Neural Voices)
+- Voice-to-Summary synthesis
 
-## Contributing
-This is a production-ready template. Future iterations will include real Vector DB integrations and live Python service bindings for the Data Analysis Lab.
+### 4. Writing & Integrity Suite
+Professional manuscript development and verification.
+- Best-in-class AI Humanizer
+- Advanced Paraphraser & Grammar Checker
+- Sentence-level AI Detection & Plagiarism Scan
+
+### 5. Data & Statistics Lab
+Full-featured SPSS/R alternative with AI-driven interpretations.
+- t-tests, ANOVA, Regression
+- Professional Visualizations
+- Automated APA Result Drafting
+
+### 6. Generative Studio
+Convert research into presentation and instructional materials.
+- PPT Deck Generator
+- Academic Video Studio (MP4)
+- Mind Map & Diagram Builder
+
+## 🛠️ Tech Stack
+- **Frontend:** Next.js 16 (App Router), Tailwind CSS, Lucide Icons
+- **Backend:** Node.js, Express, MongoDB, OpenAI/Pinecone
+- **Styling:** Premium Deep Space Dark Theme
+
+## 🚦 Getting Started
+1. Run `start_app.bat` to launch both servers.
+2. Visit `http://localhost:3000`.
+3. Use `save_to_github.bat` to push your workspace to GitHub.
+
+---
+© 2026 ScholarMind AI - Excellence in Academic Intelligence.
