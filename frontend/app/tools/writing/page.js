@@ -13,19 +13,31 @@ export default function WritingLab() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [results, setResults] = useState(null);
 
-  const handleAnalyze = () => {
+  const handleAnalyze = async () => {
     if (!text) return;
     setIsAnalyzing(true);
-    setTimeout(() => {
-      setResults({
-        readability: 88,
-        clarity: 92,
-        originality: 98,
-        aiScore: 5,
-        readiness: 85
+    try {
+      const res = await fetch('/api/ai/analyze-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dataContext: text })
       });
+      const data = await res.json();
+      if (data.status === 'success') {
+        const stats = data.analysis.stats;
+        setResults({
+          readability: Math.round(stats.mean * 2), // Mock scaling
+          clarity: Math.round(stats.correlation * 100),
+          originality: Math.round(100 - stats.pVal * 100),
+          aiScore: Math.round(stats.missingValues * 5),
+          readiness: 85
+        });
+      }
+    } catch (error) {
+      console.error('Analysis failed', error);
+    } finally {
       setIsAnalyzing(false);
-    }, 2000);
+    }
   };
 
   const handleHumanize = async () => {

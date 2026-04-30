@@ -26,30 +26,30 @@ export default function PremiumDashboard() {
   ];
 
   const aiTools = [
-    { name: 'AI Summary', icon: FileText },
-    { name: 'Detailed Summary', icon: Brain },
-    { name: 'Bullet Summary', icon: Zap },
-    { name: 'Simple Explain', icon: MessageSquare },
-    { name: 'Key Findings', icon: ShieldCheck },
-    { name: 'Methodology', icon: Layout },
-    { name: 'Literature Review', icon: BookOpen },
-    { name: 'Research Gap', icon: FileSearch },
-    { name: 'Hypothesis Builder', icon: Cpu },
-    { name: 'Future Scope', icon: Rocket },
-    { name: 'Weakness Finder', icon: Activity },
-    { name: 'Novelty Score', icon: Star },
-    { name: 'Mind Map', icon: Network },
-    { name: 'Concept Map', icon: Layers },
-    { name: 'Flashcards', icon: HelpCircle },
-    { name: 'MCQ Generator', icon: MousePointer2 },
-    { name: 'Viva Questions', icon: MessageSquare },
-    { name: 'Notes Maker', icon: PenTool },
-    { name: 'Citation Generator', icon: Quote },
-    { name: 'Reference Manager', icon: Library },
-    { name: 'Similarity Checker', icon: ShieldCheck },
-    { name: 'Plagiarism Checker', icon: FileSearch },
-    { name: 'Table Extractor', icon: Database },
-    { name: 'Formula Explain', icon: Cpu },
+    { name: 'AI Summary', icon: FileText, path: '/tools/multi-summary' },
+    { name: 'Detailed Summary', icon: Brain, path: '/tools/multi-summary' },
+    { name: 'Bullet Summary', icon: Zap, path: '/tools/multi-summary' },
+    { name: 'Simple Explain', icon: MessageSquare, path: '/tools/chat' },
+    { name: 'Key Findings', icon: ShieldCheck, path: '/tools/intel' },
+    { name: 'Methodology', icon: Layout, path: '/tools/thesis' },
+    { name: 'Literature Review', icon: BookOpen, path: '/tools/intel' },
+    { name: 'Research Gap', icon: FileSearch, path: '/tools/intel' },
+    { name: 'Hypothesis Builder', icon: Cpu, path: '/tools/thesis' },
+    { name: 'Future Scope', icon: Rocket, path: '/tools/thesis' },
+    { name: 'Weakness Finder', icon: Activity, path: '/tools/intel' },
+    { name: 'Novelty Score', icon: Star, path: '/tools/intel' },
+    { name: 'Mind Map', icon: Network, path: '/tools/visualization' },
+    { name: 'Concept Map', icon: Layers, path: '/tools/visualization' },
+    { name: 'Flashcards', icon: HelpCircle, path: '/tools/quiz' },
+    { name: 'MCQ Generator', icon: MousePointer2, path: '/tools/quiz' },
+    { name: 'Viva Questions', icon: MessageSquare, path: '/tools/chat' },
+    { name: 'Notes Maker', icon: PenTool, path: '/tools/writing' },
+    { name: 'Citation Generator', icon: Quote, path: '/tools/writing' },
+    { name: 'Reference Manager', icon: Library, path: '/tools/academic-search' },
+    { name: 'Similarity Checker', icon: ShieldCheck, path: '/tools/intel' },
+    { name: 'Plagiarism Checker', icon: FileSearch, path: '/tools/plagiarism' },
+    { name: 'Table Extractor', icon: Database, path: '/tools/data' },
+    { name: 'Formula Explain', icon: Cpu, path: '/tools/chat' },
   ];
 
   return (
@@ -67,9 +67,11 @@ export default function PremiumDashboard() {
             <p className="text-slate-500 font-medium">What would you like to do today?</p>
          </div>
          <div className="hidden lg:block relative z-10">
-            <button className="btn-premium px-8 py-4">
-               <Sparkles className="w-5 h-5" /> Start New Research
-            </button>
+            <Link href="/tools/academic-search">
+               <button className="btn-premium px-8 py-4">
+                  <Sparkles className="w-5 h-5" /> Start New Research
+               </button>
+            </Link>
          </div>
       </div>
 
@@ -124,7 +126,7 @@ export default function PremiumDashboard() {
                   <div className="flex items-center justify-between">
                      <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Added Pages / Documents <span className="text-indigo-500">(You can add unlimited)</span></h3>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
                      {[
                         { title: 'Page 1', sub: 'Introduction.pdf', pages: '15 Pages', type: 'PDF', color: 'text-red-500', bg: 'bg-red-50' },
                         { title: 'Page 2', sub: 'Research Paper.pdf', pages: '22 Pages', type: 'PDF', color: 'text-red-500', bg: 'bg-red-50' },
@@ -140,7 +142,7 @@ export default function PremiumDashboard() {
                                  {doc.type === 'JPG' && <ImageIcon className={`w-5 h-5 ${doc.color}`} />}
                                  {doc.type.includes('MB') && <Database className={`w-5 h-5 ${doc.color}`} />}
                               </div>
-                              <div>
+                              <div className="w-full">
                                  <span className="text-[11px] font-bold text-slate-900 block truncate">{doc.title}</span>
                                  <span className="text-[9px] text-slate-500 block truncate">{doc.sub}</span>
                               </div>
@@ -151,12 +153,12 @@ export default function PremiumDashboard() {
                            </div>
                         </div>
                      ))}
-                     <div className="p-4 rounded-2xl border-2 border-dashed border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/30 transition-all flex flex-col items-center justify-center gap-2 cursor-pointer group">
+                     <Link href="/tools/academic-search" className="p-4 rounded-2xl border-2 border-dashed border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/30 transition-all flex flex-col items-center justify-center gap-2 cursor-pointer group">
                         <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-all">
                            <Plus className="w-4 h-4" />
                         </div>
-                        <span className="text-[10px] font-bold text-slate-400 group-hover:text-indigo-600 uppercase tracking-widest">Add Next Page</span>
-                     </div>
+                        <span className="text-[10px] font-bold text-slate-400 group-hover:text-indigo-600 uppercase tracking-widest text-center">Add Next Page</span>
+                     </Link>
                   </div>
                </div>
             </div>
@@ -170,12 +172,12 @@ export default function PremiumDashboard() {
                   {aiTools.map((tool, idx) => {
                      const Icon = tool.icon;
                      return (
-                        <div key={idx} className="flex flex-col items-center gap-3 group cursor-pointer">
+                        <Link href={tool.path || '#'} key={idx} className="flex flex-col items-center gap-3 group cursor-pointer">
                            <div className="w-12 h-12 rounded-2xl bg-white border border-slate-100 shadow-sm flex items-center justify-center transition-all group-hover:bg-indigo-600 group-hover:text-white group-hover:-translate-y-1">
                               <Icon className="w-5 h-5" />
                            </div>
                            <span className="text-[10px] font-bold text-slate-500 text-center uppercase tracking-widest group-hover:text-indigo-600">{tool.name}</span>
-                        </div>
+                        </Link>
                      );
                   })}
                </div>
@@ -414,5 +416,3 @@ export default function PremiumDashboard() {
     </div>
   );
 }
-
-

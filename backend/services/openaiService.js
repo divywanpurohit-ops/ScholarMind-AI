@@ -10,8 +10,21 @@ if (process.env.OPENAI_API_KEY) {
 }
 
 /**
+ * Helper to clean and parse JSON from OpenAI response
+ */
+const parseAIJSON = (text) => {
+  try {
+    // Remove markdown code blocks if present
+    const cleanText = text.replace(/```json|```/g, '').trim();
+    return JSON.parse(cleanText);
+  } catch (e) {
+    console.error('Failed to parse AI JSON:', text);
+    throw new Error('Invalid AI Response Format');
+  }
+};
+
+/**
  * Translates academic text.
- * Falls back to mock if API key is not present.
  */
 exports.translateText = async (text, targetLanguage) => {
   if (!openai) {
@@ -100,7 +113,7 @@ exports.generatePPT = async (topic, structure, style, tone) => {
       response_format: { type: "json_object" },
       temperature: 0.7,
     });
-    const result = JSON.parse(response.choices[0].message.content);
+    const result = parseAIJSON(response.choices[0].message.content);
     return result.slides || result;
   } catch (error) {
     console.error('[OpenAI Service Error]', error);
@@ -135,7 +148,7 @@ exports.generateVideoScript = async (prompt, style, audio) => {
       response_format: { type: "json_object" },
       temperature: 0.7,
     });
-    return JSON.parse(response.choices[0].message.content);
+    return parseAIJSON(response.choices[0].message.content);
   } catch (error) {
     console.error('[OpenAI Service Error]', error);
     throw new Error('Video generation failed');
@@ -165,7 +178,7 @@ exports.analyzeData = async (dataContext) => {
       response_format: { type: "json_object" },
       temperature: 0.3,
     });
-    return JSON.parse(response.choices[0].message.content);
+    return parseAIJSON(response.choices[0].message.content);
   } catch (error) {
     console.error('[OpenAI Service Error]', error);
     throw new Error('Data analysis failed');
@@ -230,7 +243,7 @@ exports.generateVisualizationData = async (prompt, type) => {
       response_format: { type: "json_object" },
       temperature: 0.5,
     });
-    return JSON.parse(response.choices[0].message.content);
+    return parseAIJSON(response.choices[0].message.content);
   } catch (error) {
     console.error('[OpenAI Service Error]', error);
     throw new Error('Visualization generation failed');
@@ -311,7 +324,7 @@ exports.searchPapers = async (query) => {
       ],
       response_format: { type: "json_object" },
     });
-    return JSON.parse(response.choices[0].message.content).results;
+    return parseAIJSON(response.choices[0].message.content).results || [];
   } catch (error) {
     console.error('[OpenAI Service Error]', error);
     throw new Error('Search failed');
@@ -347,7 +360,7 @@ exports.auditResearch = async (topic) => {
       ],
       response_format: { type: "json_object" },
     });
-    return JSON.parse(response.choices[0].message.content);
+    return parseAIJSON(response.choices[0].message.content);
   } catch (error) {
     console.error('[OpenAI Service Error]', error);
     throw new Error('Audit failed');

@@ -39,7 +39,9 @@ export default function PPTSideBySide() {
       if (!res.ok) throw new Error(`Server returned ${res.status}`);
       const data = await res.json();
       if (data.status === 'success') {
-        setSlides(data.slides);
+        const slidesData = Array.isArray(data.slides) ? data.slides : (data.slides.slides || []);
+        if (slidesData.length === 0) throw new Error('No slides generated');
+        setSlides(slidesData);
         setSlidesReady(true);
         setCurrentSlide(0);
       } else {
