@@ -15,6 +15,7 @@ export default function PPTSideBySide() {
   const [slidesReady, setSlidesReady] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [slides, setSlides] = useState([]);
+  const [error, setError] = useState(null);
 
   const pockets = [
     { id: 'topic', label: 'Topic & Source', icon: Sliders },
@@ -26,22 +27,27 @@ export default function PPTSideBySide() {
   const handleGenerate = async () => {
     if (!topic) return;
     setIsGenerating(true);
+    setError(null);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/ai/generate-ppt`, {
+      const res = await fetch('/api/ai/generate-ppt', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ topic, structure: 'Academic', style: 'Academic', tone: 'Professional' })
       });
+      if (!res.ok) throw new Error(`Server returned ${res.status}`);
       const data = await res.json();
       if (data.status === 'success') {
         setSlides(data.slides);
         setSlidesReady(true);
         setCurrentSlide(0);
+      } else {
+        throw new Error(data.message || 'Generation failed');
       }
     } catch (error) {
       console.error('Failed to generate PPT', error);
+      setError(error.message);
     } finally {
       setIsGenerating(false);
     }
@@ -171,10 +177,13 @@ export default function PPTSideBySide() {
         <div className="flex-1 flex flex-col gap-6 min-h-0 overflow-hidden">
            <div className="flex-1 solid-card bg-slate-900 overflow-hidden flex flex-col shadow-2xl relative border-none">
               {!slidesReady ? (
-                 <div className="flex-1 flex flex-col items-center justify-center text-center p-10 opacity-30 gap-6">
-                    <Monitor className="w-20 h-20 text-white" />
-                    <p className="text-xl font-bold text-white tracking-widest uppercase">Canvas Ready</p>
-                 </div>
+                  <div className="flex-1 flex flex-col items-center justify-center text-center p-10 opacity-30 gap-6">
+                     <Monitor className="w-20 h-20 text-slate-400" />
+                     <div className="space-y-2">
+                        <p className="text-xl font-bold text-slate-400 tracking-widest uppercase">{isGenerating ? 'Drafting Slides...' : 'Workspace Ready'}</p>
+                        {error && <p className="text-red-500 font-bold text-sm">Error: {error}</p>}
+                     </div>
+                  </div>
               ) : (
                  <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
                     <div className="flex-1 p-16 flex flex-col justify-center overflow-y-auto custom-scrollbar relative bg-white">

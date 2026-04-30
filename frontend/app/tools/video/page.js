@@ -23,25 +23,32 @@ export default function VideoSideBySide() {
     { id: 'captions', label: 'Captions Settings', icon: Languages }
   ];
 
+  const [error, setError] = useState(null);
+
   const handleGenerate = async () => {
     if (!prompt) return;
     setIsGenerating(true);
+    setError(null);
     setEstimatedTime('~1-2 minutes');
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/ai/generate-video`, {
+      const res = await fetch('/api/ai/generate-video', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ prompt, style: 'Cinematic', audio: 'Professional' })
       });
+      if (!res.ok) throw new Error(`Server returned ${res.status}`);
       const data = await res.json();
       if (data.status === 'success') {
         setVideoScript(data.videoData);
         setVideoReady(true);
+      } else {
+        throw new Error(data.message || 'Generation failed');
       }
     } catch (error) {
       console.error('Failed to generate video script', error);
+      setError(error.message);
     } finally {
       setIsGenerating(false);
     }
@@ -147,6 +154,7 @@ export default function VideoSideBySide() {
                      <div className="space-y-2">
                         <p className="text-xl font-bold text-white tracking-widest uppercase">{isGenerating ? 'Rendering Pipeline...' : 'Pipeline Ready'}</p>
                         {isGenerating && <p className="text-orange-500 font-mono text-xs uppercase animate-pulse">Estimated Time: {estimatedTime}</p>}
+                        {error && <p className="text-red-500 font-bold text-sm">Error: {error}</p>}
                      </div>
                   </div>
               ) : (

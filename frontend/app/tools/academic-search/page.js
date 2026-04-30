@@ -17,7 +17,7 @@ export default function AcademicSearch() {
     if (!query) return;
     setIsSearching(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/ai/search-papers`, {
+      const res = await fetch('/api/ai/search-papers', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

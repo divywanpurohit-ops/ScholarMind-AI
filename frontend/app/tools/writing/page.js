@@ -32,7 +32,7 @@ export default function WritingLab() {
     if (!text) return;
     setIsAnalyzing(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/ai/humanize`, {
+      const res = await fetch('/api/ai/humanize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text })

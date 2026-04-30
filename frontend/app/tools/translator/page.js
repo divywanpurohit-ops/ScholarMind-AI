@@ -13,26 +13,32 @@ export default function TranslatorLab() {
   const [targetText, setTargetText] = useState('');
   const [isTranslating, setIsTranslating] = useState(false);
   const [activeMode, setActiveMode] = useState('academic');
+  const [targetLang, setTargetLang] = useState('Hindi');
+  const [error, setError] = useState(null);
 
   const handleTranslate = async () => {
     if (!sourceText) return;
     setIsTranslating(true);
+    setError(null);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/ai/translate`, {
+      const res = await fetch('/api/ai/translate', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ text: sourceText, targetLanguage: 'English/Target' })
+        body: JSON.stringify({ text: sourceText, targetLanguage: targetLang })
       });
+      if (!res.ok) throw new Error(`Server returned ${res.status}`);
       const data = await res.json();
       if (data.status === 'success') {
         setTargetText(data.translatedText);
+      } else {
+        throw new Error(data.message || 'Translation failed');
       }
     } catch (error) {
       console.error('Translation failed', error);
-      setTargetText('Error occurred during translation.');
+      setError(error.message);
+      setTargetText(`Error: ${error.message}`);
     } finally {
       setIsTranslating(false);
     }
@@ -70,10 +76,16 @@ export default function TranslatorLab() {
                  <option>Spanish</option>
               </select>
               <ArrowRightLeft className="w-4 h-4 text-blue-500" />
-              <select className="bg-transparent text-xs font-bold text-blue-600 focus:outline-none cursor-pointer">
+              <select 
+                value={targetLang}
+                onChange={(e) => setTargetLang(e.target.value)}
+                className="bg-transparent text-xs font-bold text-blue-600 focus:outline-none cursor-pointer"
+              >
                  <option>Hindi</option>
                  <option>English</option>
                  <option>German</option>
+                 <option>Spanish</option>
+                 <option>French</option>
               </select>
            </div>
 

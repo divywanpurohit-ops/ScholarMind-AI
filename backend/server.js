@@ -17,18 +17,26 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/projects', require('./routes/projects'));
 app.use('/api/ai', require('./routes/ai'));
 
+// Export for Vercel
+module.exports = app;
+
 // Connect to MongoDB
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/scholarmind';
 
-mongoose
-  .connect(MONGO_URI)
-  .then(() => {
-    console.log('Connected to MongoDB');
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+if (require.main === module) {
+  mongoose
+    .connect(MONGO_URI)
+    .then(() => {
+      console.log('Connected to MongoDB');
+      app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+      });
+    })
+    .catch((err) => {
+      console.error('Database connection error:', err);
     });
-  })
-  .catch((err) => {
-    console.error('Database connection error:', err);
-  });
+} else {
+  // Ensure DB connection for serverless
+  mongoose.connect(MONGO_URI).catch(err => console.error(err));
+}
