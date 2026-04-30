@@ -14,6 +14,7 @@ export default function PPTSideBySide() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [slidesReady, setSlidesReady] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [slides, setSlides] = useState([]);
 
   const pockets = [
     { id: 'topic', label: 'Topic & Source', icon: Sliders },
@@ -22,18 +23,47 @@ export default function PPTSideBySide() {
     { id: 'tone', label: 'Content Tone', icon: Type }
   ];
 
-  const mockSlides = [
-    { title: "Quantum Cryptography", subtitle: "A Paradigm Shift in Secure Communication", content: "Presented by Dr. Researcher" },
-    { title: "The Key Distribution Problem", content: "• Traditional cryptography relies on computational complexity.\n• Quantum computers threaten RSA and ECC.\n• QKD offers information-theoretic security based on physics." }
-  ];
-
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     if (!topic) return;
     setIsGenerating(true);
-    setTimeout(() => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/ai/generate-ppt`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ topic, structure: 'Academic', style: 'Modern', tone: 'Professional' })
+      });
+      const data = await res.json();
+      if (data.status === 'success') {
+        setSlides(data.slides);
+        setSlidesReady(true);
+        setCurrentSlide(0);
+      }
+    } catch (error) {
+      console.error('Failed to generate PPT', error);
+    } finally {
       setIsGenerating(false);
-      setSlidesReady(true);
-    }, 2000);
+    }
+  };
+
+  const handleDownloadPPT = async () => {
+    if (!slides || slides.length === 0) return;
+    // Dynamically import pptxgenjs to avoid SSR issues
+    const pptxgen = (await import('pptxgenjs')).default;
+    let pres = new pptxgen();
+    
+    slides.forEach(slideData => {
+      let slide = pres.addSlide();
+      slide.addText(slideData.title, { x: 0.5, y: 0.5, fontSize: 32, bold: true, color: "363636" });
+      if (slideData.subtitle) {
+        slide.addText(slideData.subtitle, { x: 0.5, y: 1.2, fontSize: 18, color: "666666" });
+      }
+      slide.addText(slideData.content, { x: 0.5, y: 2.0, fontSize: 14, color: "363636", bullet: true });
+    });
+    
+    pres.writeFile({ fileName: `ScholarMind_${topic.slice(0, 10)}.pptx` });
   };
 
   return (
@@ -50,7 +80,7 @@ export default function PPTSideBySide() {
         {slidesReady && (
            <div className="flex gap-3">
               <button onClick={() => setSlidesReady(false)} className="btn-secondary py-2 px-4 text-xs font-bold">Reset</button>
-              <button className="btn-primary py-2 px-6 text-xs bg-emerald-600 border-none shadow-md">
+              <button onClick={handleDownloadPPT} className="btn-primary py-2 px-6 text-xs bg-emerald-600 border-none shadow-md">
                  <Download className="w-4 h-4" /> Download PPTX
               </button>
            </div>
@@ -140,23 +170,23 @@ export default function PPTSideBySide() {
                  <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
                     <div className="flex-1 p-16 flex flex-col justify-center overflow-y-auto custom-scrollbar relative bg-white">
                        <div className="max-w-3xl mx-auto text-center space-y-8 animate-fade-in">
-                          <h2 className="text-5xl font-bold text-slate-900 tracking-tight leading-tight">{mockSlides[currentSlide].title}</h2>
-                          <div className="w-20 h-1.5 bg-emerald-600 mx-auto rounded-full"></div>
-                          <p className="text-slate-600 text-2xl font-serif italic leading-relaxed">{mockSlides[currentSlide].content}</p>
+                           <h2 className="text-5xl font-bold text-slate-900 tracking-tight leading-tight">{slides[currentSlide]?.title}</h2>
+                           <div className="w-20 h-1.5 bg-emerald-600 mx-auto rounded-full"></div>
+                           <p className="text-slate-600 text-2xl font-serif italic leading-relaxed whitespace-pre-wrap">{slides[currentSlide]?.content}</p>
                        </div>
                     </div>
 
                     <div className="p-5 bg-slate-50 border-t border-slate-200 flex items-center justify-between shrink-0 px-10">
-                       <button onClick={() => setCurrentSlide(0)} className="p-3 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-emerald-600 transition-all">
+                       <button onClick={() => setCurrentSlide(prev => Math.max(0, prev - 1))} className="p-3 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-emerald-600 transition-all">
                           <ChevronLeft className="w-6 h-6" />
                        </button>
                        <div className="flex items-center gap-6">
-                          <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Slide {currentSlide + 1} / 12</span>
+                          <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Slide {currentSlide + 1} / {slides.length}</span>
                           <div className="flex gap-2">
-                             {[1, 2, 3, 4, 5].map(i => <div key={i} className={`h-1.5 rounded-full transition-all ${i === currentSlide + 1 ? 'w-10 bg-emerald-600' : 'w-2 bg-slate-200'}`}></div>)}
+                             {slides.map((_, i) => <div key={i} className={`h-1.5 rounded-full transition-all ${i === currentSlide ? 'w-10 bg-emerald-600' : 'w-2 bg-slate-200'}`}></div>)}
                           </div>
                        </div>
-                       <button onClick={() => setCurrentSlide(1)} className="p-3 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-emerald-600 transition-all">
+                       <button onClick={() => setCurrentSlide(prev => Math.min(slides.length - 1, prev + 1))} className="p-3 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-emerald-600 transition-all">
                           <ChevronRight className="w-6 h-6" />
                        </button>
                     </div>
@@ -166,7 +196,12 @@ export default function PPTSideBySide() {
 
            {slidesReady && (
               <div className="solid-card p-6 bg-white shrink-0">
-                 <ExportShareBar title="Academic Slide Deck" fileType="PPTX" />
+                 <ExportShareBar 
+                    title="Academic Slide Deck" 
+                    fileType="PPTX" 
+                    onDownload={handleDownloadPPT}
+                    contentToShare={`I just generated an AI presentation on "${topic}" using ScholarMind AI!`}
+                 />
               </div>
            )}
         </div>

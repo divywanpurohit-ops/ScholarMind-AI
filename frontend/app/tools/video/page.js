@@ -13,6 +13,7 @@ export default function VideoSideBySide() {
   const [prompt, setPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
+  const [videoScript, setVideoScript] = useState(null);
 
   const pockets = [
     { id: 'script', label: 'Script & Concept', icon: Sliders },
@@ -21,13 +22,28 @@ export default function VideoSideBySide() {
     { id: 'captions', label: 'Captions Settings', icon: Languages }
   ];
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     if (!prompt) return;
     setIsGenerating(true);
-    setTimeout(() => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/ai/generate-video`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ prompt, style: 'Cinematic', audio: 'Professional' })
+      });
+      const data = await res.json();
+      if (data.status === 'success') {
+        setVideoScript(data.videoData);
+        setVideoReady(true);
+      }
+    } catch (error) {
+      console.error('Failed to generate video script', error);
+    } finally {
       setIsGenerating(false);
-      setVideoReady(true);
-    }, 2500);
+    }
   };
 
   return (
@@ -131,26 +147,27 @@ export default function VideoSideBySide() {
                  </div>
               ) : (
                  <div className="flex-1 flex flex-col min-h-0 overflow-hidden bg-gradient-to-br from-slate-900 to-black relative">
-                    <div className="flex-1 flex items-center justify-center p-12">
-                       <div className="w-full max-w-4xl aspect-video bg-black rounded-3xl overflow-hidden relative shadow-2xl border border-white/5">
-                          <div className="absolute inset-0 flex items-center justify-center">
-                             <div className="text-center p-10 animate-fade-in">
-                                <PlayCircle className="w-20 h-20 text-orange-500 mx-auto mb-6 animate-pulse" />
-                                <h3 className="text-3xl font-bold text-white tracking-wide uppercase font-heading">{prompt}</h3>
-                                <p className="text-orange-500 mt-2 font-mono text-xs uppercase tracking-tighter">Simulating Video Render...</p>
-                             </div>
-                          </div>
+                    <div className="flex-1 overflow-y-auto custom-scrollbar p-12">
+                       <div className="max-w-4xl mx-auto space-y-6">
+                          <h3 className="text-3xl font-bold text-white tracking-wide uppercase font-heading text-center mb-10">{videoScript?.title}</h3>
                           
-                          {/* Controls Bar */}
-                          <div className="absolute bottom-0 left-0 w-full h-20 bg-black/60 backdrop-blur-md flex items-center px-10 gap-8">
-                             <button className="text-white hover:text-orange-400 transition-colors">
-                                <Play className="w-8 h-8 fill-current" />
-                             </button>
-                             <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
-                                <div className="h-full bg-orange-600 w-1/3"></div>
+                          {videoScript?.scenes?.map((scene, idx) => (
+                             <div key={idx} className="flex gap-6 p-6 rounded-2xl bg-white/5 border border-white/10 animate-fade-in hover:bg-white/10 transition-colors">
+                                <div className="w-12 h-12 shrink-0 rounded-xl bg-orange-600/20 text-orange-500 flex items-center justify-center font-bold text-xl border border-orange-500/30">
+                                   {scene.scene}
+                                </div>
+                                <div className="space-y-4 flex-1">
+                                   <div>
+                                      <h4 className="text-[10px] font-bold text-orange-500 uppercase tracking-widest mb-2 flex items-center gap-2"><Film className="w-3 h-3" /> Visual Setting</h4>
+                                      <p className="text-slate-300 text-sm leading-relaxed">{scene.visual}</p>
+                                   </div>
+                                   <div className="p-4 rounded-xl bg-black/40 border border-white/5">
+                                      <h4 className="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-2 flex items-center gap-2"><Volume2 className="w-3 h-3" /> Narration Script</h4>
+                                      <p className="text-slate-400 font-serif italic text-sm">"{scene.narration}"</p>
+                                   </div>
+                                </div>
                              </div>
-                             <span className="text-xs font-mono text-slate-400">01:04 / 03:20</span>
-                          </div>
+                          ))}
                        </div>
                     </div>
                  </div>
@@ -159,7 +176,11 @@ export default function VideoSideBySide() {
 
            {videoReady && (
               <div className="solid-card p-6 bg-white shrink-0">
-                 <ExportShareBar title="Academic Video Project" fileType="MP4" />
+                 <ExportShareBar 
+                    title="Academic Video Project" 
+                    fileType="MP4" 
+                    contentToShare={`I just created a video script for "${prompt}" using ScholarMind AI!`}
+                 />
               </div>
            )}
         </div>

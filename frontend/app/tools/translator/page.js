@@ -14,13 +14,28 @@ export default function TranslatorLab() {
   const [isTranslating, setIsTranslating] = useState(false);
   const [activeMode, setActiveMode] = useState('academic');
 
-  const handleTranslate = () => {
+  const handleTranslate = async () => {
     if (!sourceText) return;
     setIsTranslating(true);
-    setTimeout(() => {
-      setTargetText(`[Bilingual Translation - ${activeMode.toUpperCase()}]\n\nTranslated academic text preserving all equations, tables, and citations for professional submission.`);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/ai/translate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ text: sourceText, targetLanguage: 'English/Target' })
+      });
+      const data = await res.json();
+      if (data.status === 'success') {
+        setTargetText(data.translatedText);
+      }
+    } catch (error) {
+      console.error('Translation failed', error);
+      setTargetText('Error occurred during translation.');
+    } finally {
       setIsTranslating(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -170,7 +185,11 @@ export default function TranslatorLab() {
 
       {targetText && (
          <div className="solid-card p-6 bg-white shrink-0">
-            <ExportShareBar title="Academic Translation" fileType="PDF" />
+            <ExportShareBar 
+              title="Academic Translation" 
+              fileType="PDF" 
+              contentToShare={`Check out my translated text:\n\n${targetText}`}
+            />
          </div>
       )}
     </div>

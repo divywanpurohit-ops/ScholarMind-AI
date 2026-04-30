@@ -2,12 +2,17 @@
 import { Download, Link as LinkIcon, Check, MessageCircle } from 'lucide-react';
 import { useState } from 'react';
 
-export default function ExportShareBar({ title, fileType }) {
+export default function ExportShareBar({ title, fileType, onDownload, contentToShare }) {
   const [copied, setCopied] = useState(false);
 
   const handleCopyLink = () => {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleWhatsApp = () => {
+    const text = contentToShare || `Check out this ${title} I created using ScholarMind AI!`;
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
   };
 
   return (
@@ -24,7 +29,10 @@ export default function ExportShareBar({ title, fileType }) {
 
       <div className="flex items-center gap-3">
         {/* Share to WhatsApp Button */}
-        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366]/20 border border-[#25D366]/20 transition-colors">
+        <button 
+          onClick={handleWhatsApp}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366]/20 border border-[#25D366]/20 transition-colors"
+        >
           <MessageCircle className="w-4 h-4" />
           <span className="text-sm font-medium">WhatsApp</span>
         </button>
@@ -39,7 +47,10 @@ export default function ExportShareBar({ title, fileType }) {
         </button>
 
         {/* Download Button */}
-        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#4f46e5] text-white hover:bg-[#4338ca] transition-colors">
+        <button 
+          onClick={onDownload}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#4f46e5] text-white hover:bg-[#4338ca] transition-colors"
+        >
           <Download className="w-4 h-4" />
           <span className="text-sm font-medium">Download</span>
         </button>

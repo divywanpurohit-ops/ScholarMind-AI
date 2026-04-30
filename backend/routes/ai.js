@@ -37,5 +37,64 @@ router.post('/summarize', auth, async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
+// PPT Generation
+router.post('/generate-ppt', auth, async (req, res) => {
+  try {
+    const { topic, structure, style, tone } = req.body;
+    const slides = await openaiService.generatePPT(topic, structure, style, tone);
+    res.json({ slides, status: 'success' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// Video Script Generation
+router.post('/generate-video', auth, async (req, res) => {
+  try {
+    const { prompt, style, audio } = req.body;
+    const videoData = await openaiService.generateVideoScript(prompt, style, audio);
+    res.json({ videoData, status: 'success' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// Visualization Generation
+router.post('/generate-visualization', auth, async (req, res) => {
+  try {
+    const { prompt, type } = req.body;
+    const visualizationData = await openaiService.generateVisualizationData(prompt, type);
+    res.json({ visualizationData, status: 'success' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// Data Analysis
+router.post('/analyze-data', auth, async (req, res) => {
+  try {
+    const { dataContext } = req.body;
+    const analysis = await openaiService.analyzeData(dataContext);
+    res.json({ analysis, status: 'success' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// Thesis Generation
+router.post('/generate-thesis', auth, async (req, res) => {
+  try {
+    const { chapterTitle, projectContext } = req.body;
+    const content = await openaiService.generateThesisChapter(chapterTitle, projectContext);
+    res.json({ content, status: 'success' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
 
 module.exports = router;

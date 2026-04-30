@@ -12,6 +12,8 @@ export default function VisualizationLab() {
   const [activeType, setActiveType] = useState('mindmap');
   const [isGenerating, setIsGenerating] = useState(false);
   const [ready, setReady] = useState(false);
+  const [vizData, setVizData] = useState(null);
+  const [prompt, setPrompt] = useState('');
 
   const vizTypes = [
     { id: 'mindmap', label: 'Mind Map', icon: Network, desc: 'Visual brainstorming' },
@@ -20,12 +22,27 @@ export default function VisualizationLab() {
     { id: 'pathway', label: 'Reaction Pathway', icon: Activity, desc: 'Bio/Chem cycles' },
   ];
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     setIsGenerating(true);
-    setTimeout(() => {
-      setReady(true);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/ai/generate-visualization`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ prompt, type: activeType })
+      });
+      const data = await res.json();
+      if (data.status === 'success') {
+        setVizData(data.visualizationData);
+        setReady(true);
+      }
+    } catch (error) {
+      console.error('Visualization generation failed', error);
+    } finally {
       setIsGenerating(false);
-    }, 2000);
+    }
   };
 
   return (
@@ -87,10 +104,12 @@ export default function VisualizationLab() {
               <textarea 
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs text-slate-900 focus:outline-none focus:border-violet-500 transition-all min-h-[120px]"
                 placeholder="Describe the logic or connections you want to visualize..."
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
               ></textarea>
               <button 
                 onClick={handleGenerate}
-                disabled={isGenerating}
+                disabled={isGenerating || !prompt}
                 className="w-full btn-primary bg-violet-600 py-3 shadow-xl shadow-violet-100 border-none flex items-center justify-center gap-2"
               >
                  {isGenerating ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> : <Sparkles className="w-4 h-4" />}
@@ -126,23 +145,27 @@ export default function VisualizationLab() {
                     {/* Simulated Mind Map Nodes */}
                     <div className="absolute inset-0 flex items-center justify-center">
                        <div className="relative w-full h-full">
-                          {/* Center Node */}
-                          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-8 bg-violet-600 rounded-3xl text-white shadow-3xl shadow-violet-500/50 border border-violet-400 animate-fade-in">
-                             <h2 className="text-2xl font-bold tracking-tight">Core Research Objective</h2>
-                          </div>
-                          
-                          {/* Branch 1 */}
-                          <div className="absolute top-1/4 left-1/4 p-6 bg-slate-900 border border-slate-700 rounded-2xl text-slate-300 shadow-xl animate-fade-in delay-100">
-                             <p className="text-sm font-bold">Literature Gap</p>
-                          </div>
-                          {/* Branch 2 */}
-                          <div className="absolute top-3/4 right-1/4 p-6 bg-slate-900 border border-slate-700 rounded-2xl text-slate-300 shadow-xl animate-fade-in delay-200">
-                             <p className="text-sm font-bold">Hypothesis A</p>
-                          </div>
-                          {/* Branch 3 */}
-                          <div className="absolute top-1/3 right-1/3 p-6 bg-slate-900 border border-slate-700 rounded-2xl text-slate-300 shadow-xl animate-fade-in delay-300">
-                             <p className="text-sm font-bold">Data Source X</p>
-                          </div>
+                          {/* Dynamic Nodes from API */}
+                          {vizData?.nodes?.map((node, index) => {
+                             // Quick hardcoded positioning logic for demo purposes based on index
+                             const positions = [
+                               "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-8 bg-violet-600 rounded-3xl text-white shadow-3xl shadow-violet-500/50 border border-violet-400", // Center
+                               "top-1/4 left-1/4 p-6 bg-slate-900 border border-slate-700 rounded-2xl text-slate-300 shadow-xl",
+                               "top-3/4 right-1/4 p-6 bg-slate-900 border border-slate-700 rounded-2xl text-slate-300 shadow-xl",
+                               "top-1/3 right-1/3 p-6 bg-slate-900 border border-slate-700 rounded-2xl text-slate-300 shadow-xl",
+                               "bottom-1/4 left-1/3 p-6 bg-slate-900 border border-slate-700 rounded-2xl text-slate-300 shadow-xl"
+                             ];
+                             const posClass = positions[index % positions.length];
+                             return (
+                               <div key={node.id} className={`absolute ${posClass} animate-fade-in`} style={{ animationDelay: `${index * 100}ms` }}>
+                                  {index === 0 ? (
+                                     <h2 className="text-2xl font-bold tracking-tight">{node.label}</h2>
+                                  ) : (
+                                     <p className="text-sm font-bold">{node.label}</p>
+                                  )}
+                               </div>
+                             );
+                          })}
 
                           {/* Connections Lines (Simulated with simple divs) */}
                           <div className="absolute top-1/2 left-1/2 w-[25%] h-px bg-gradient-to-r from-violet-500 to-transparent rotate-45 origin-left -translate-y-1/2 opacity-30"></div>
@@ -161,7 +184,11 @@ export default function VisualizationLab() {
 
            {ready && (
               <div className="solid-card p-6 bg-white shrink-0">
-                 <ExportShareBar title="Scientific Visualization" fileType="SVG" />
+                 <ExportShareBar 
+                    title="Scientific Visualization" 
+                    fileType="SVG" 
+                    contentToShare={`I just generated a cool visualization about "${prompt}" with ScholarMind!`}
+                 />
               </div>
            )}
         </div>

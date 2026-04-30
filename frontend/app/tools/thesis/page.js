@@ -22,16 +22,33 @@ export default function ThesisModePro() {
     { id: 'discussion', title: 'Discussion', icon: MessageSquare, desc: 'Interpretations' },
   ];
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     setIsGenerating(true);
     const chapterId = chapters[activeStep].id;
-    setTimeout(() => {
-      setOutputs({
-        ...outputs,
-        [chapterId]: `[Simulated Academic Content for ${chapters[activeStep].title}]\n\nProfessional dissertation drafting in progress using ScholarMind AI algorithms...`
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/ai/generate-thesis`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ 
+          chapterTitle: chapters[activeStep].title,
+          projectContext: 'Advanced AI Research and Deep Learning integrations.' 
+        })
       });
+      const data = await res.json();
+      if (data.status === 'success') {
+        setOutputs(prev => ({
+          ...prev,
+          [chapterId]: data.content
+        }));
+      }
+    } catch (error) {
+      console.error('Thesis generation failed', error);
+    } finally {
       setIsGenerating(false);
-    }, 1500);
+    }
   };
 
   return (

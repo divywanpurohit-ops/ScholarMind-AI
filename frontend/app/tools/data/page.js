@@ -15,20 +15,35 @@ export default function DataAnalysisLab() {
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState(null);
 
-  const handleLoadData = () => {
+  const handleLoadData = async () => {
     setLoading(true);
-    setTimeout(() => {
-      setDataLoaded(true);
-      setStats({
-        mean: 42.5,
-        sd: 12.8,
-        pVal: 0.042,
-        correlation: 0.85,
-        missingValues: 2
+    try {
+      // Mock data context since we don't have real file upload hooked up to backend yet
+      const sampleData = "Sample Dataset: 150 rows. Columns: Age (mean=42.5), Income, Education Level. Contains some missing values.";
+      
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/ai/analyze-data`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ dataContext: sampleData })
       });
+      const data = await res.json();
+      if (data.status === 'success') {
+        setStats(data.analysis.stats);
+        // Assuming we store interpretation in state as well, let's add it
+        setInterpretation(data.analysis.interpretation);
+        setDataLoaded(true);
+      }
+    } catch (error) {
+      console.error('Data analysis failed', error);
+    } finally {
       setLoading(false);
-    }, 1800);
+    }
   };
+
+  const [interpretation, setInterpretation] = useState('');
 
   return (
     <div className="animate-fade-in flex flex-col h-full w-full gap-8">
@@ -186,7 +201,7 @@ export default function DataAnalysisLab() {
                           <Sparkles className="w-4 h-4 text-amber-500" /> Paper-Ready Interpretation
                        </h3>
                        <div className="p-6 rounded-2xl bg-slate-900 text-slate-300 font-serif leading-relaxed italic border-l-4 border-emerald-500">
-                          "The analysis reveals a statistically significant correlation (r = 0.85, p = 0.042) between the studied variables. The observed mean (42.5) indicates a substantial deviation from the control group, suggesting high impact publication readiness for this dataset."
+                          "{interpretation}"
                        </div>
                        <div className="flex justify-end gap-3">
                           <button className="flex items-center gap-2 text-xs font-bold text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg transition-all">
@@ -203,7 +218,11 @@ export default function DataAnalysisLab() {
 
            {dataLoaded && (
               <div className="solid-card p-6 bg-white shrink-0">
-                 <ExportShareBar title="Data Analysis Report" fileType="PDF" />
+                 <ExportShareBar 
+                    title="Data Analysis Report" 
+                    fileType="PDF" 
+                    contentToShare={`Check out my latest AI Data Analysis:\n\n${interpretation}`}
+                 />
               </div>
            )}
         </div>
