@@ -97,11 +97,11 @@ router.post('/generate-thesis', async (req, res) => {
 });
 
 // Academic Search
-router.post('/search-papers', async (req, res) => {
+router.get('/academic-search', async (req, res) => {
   try {
-    const { query } = req.body;
-    const results = await openaiService.searchPapers(query);
-    res.json({ results, status: 'success' });
+    const { query } = req.query;
+    const papers = await openaiService.searchPapers(query);
+    res.json({ papers, status: 'success' });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
