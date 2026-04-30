@@ -150,7 +150,7 @@ export default function GlobalDiscoveryHub() {
                      <div key={idx} className="glass-card p-8 bg-white border-slate-100 hover:border-blue-500 hover:shadow-2xl hover:shadow-blue-500/5 transition-all group relative overflow-hidden animate-slide-up" style={{ animationDelay: `${idx * 0.1}s` }}>
                         <div className="absolute top-0 right-0 p-8 flex flex-col gap-2">
                            <div className="px-3 py-1 rounded bg-blue-50 text-blue-600 text-[8px] font-black uppercase border border-blue-100">{paper.year}</div>
-                           <div className="px-3 py-1 rounded bg-emerald-50 text-emerald-600 text-[8px] font-black uppercase border border-emerald-100">Citations: {Math.floor(Math.random() * 500)}</div>
+                           <div className="px-3 py-1 rounded bg-emerald-50 text-emerald-600 text-[8px] font-black uppercase border border-emerald-100">Verified Citation</div>
                         </div>
                         <div className="space-y-4 pr-32">
                            <h3 className="text-xl font-black text-slate-900 group-hover:text-blue-600 transition-colors leading-tight">{paper.title}</h3>

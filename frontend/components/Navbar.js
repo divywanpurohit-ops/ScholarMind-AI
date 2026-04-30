@@ -87,10 +87,10 @@ export default function Navbar() {
               className="flex items-center gap-3 p-1 rounded-full border border-slate-200 hover:border-indigo-200 transition-all bg-white shadow-sm"
             >
                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white text-xs font-bold">
-                  AK
+                  KC
                </div>
                <div className="text-left pr-2 hidden md:block">
-                  <p className="text-[10px] font-bold text-slate-900 leading-none">Arham Khan</p>
+                  <p className="text-[10px] font-bold text-slate-900 leading-none">Kailash Chandra</p>
                   <p className="text-[8px] text-slate-400 font-medium tracking-widest mt-1">RESEARCHER</p>
                </div>
                <ChevronDown className={`w-3.5 h-3.5 text-slate-400 mr-2 transition-transform ${showProfile ? 'rotate-180' : ''}`} />
@@ -100,7 +100,7 @@ export default function Navbar() {
                <div className="absolute top-[calc(100%+12px)] right-0 w-64 glass-card bg-white p-2 shadow-2xl shadow-indigo-500/10 border-slate-100 animate-fade-in z-[60]">
                   <div className="p-4 border-b border-slate-50">
                      <p className="text-xs font-bold text-slate-900">Personal Account</p>
-                     <p className="text-[10px] text-slate-400">arham@scholarmind.ai</p>
+                     <p className="text-[10px] text-slate-400">kailash@scholarmind.ai</p>
                   </div>
                   <div className="py-2">
                      <button className="w-full flex items-center gap-3 px-4 py-2.5 text-xs text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-all rounded-xl">

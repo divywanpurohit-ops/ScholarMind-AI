@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { 
   Sparkles, Mail, Lock, ChevronRight, 
   ArrowRight, ShieldCheck, Globe, Zap, 
-  Fingerprint, Globe, ShieldCheck, Zap
+  Fingerprint
 } from 'lucide-react';
 import Link from 'next/link';
 
