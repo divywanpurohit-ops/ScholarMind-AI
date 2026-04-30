@@ -1,158 +1,130 @@
 'use client';
 import { useState } from 'react';
-import { Mail, Lock, User, Building2, Loader2, BookOpen } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { 
+  Sparkles, Mail, Lock, User, 
+  ArrowRight, ShieldCheck, Globe, Zap, 
+  Fingerprint
+} from 'lucide-react';
 import Link from 'next/link';
 
-export default function Register() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    institution: '',
-    password: ''
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState('');
+export default function RegisterPage() {
+  const router = useRouter();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleRegister = async (e) => {
+  const handleRegister = (e) => {
     e.preventDefault();
-    setError('');
-    setIsSubmitting(true);
-    
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password
-        })
-      });
-      
-      const data = await res.json();
-      
-      if (!res.ok) throw new Error(data.error || 'Registration failed');
-      
-      // Store token and redirect
-      localStorage.setItem('token', data.token);
-      window.location.href = '/';
-      
-    } catch (err) {
-      setError(err.message);
-      setIsSubmitting(false);
-    }
+    setIsLoading(true);
+    setTimeout(() => {
+      router.push('/login');
+      setIsLoading(false);
+    }, 1500);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
-       {/* Background decorative elements */}
-       <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-       <div className="absolute bottom-1/4 left-1/4 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div className="min-h-screen bg-[#0d1117] flex items-center justify-center p-6 relative overflow-hidden">
+      
+      {/* Background */}
+      <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-blue-600/10 rounded-full blur-[120px] -ml-96 -mt-96 animate-pulse"></div>
+      <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[100px] -mr-48 -mb-48"></div>
 
-       <div className="w-full max-w-lg animate-fade-in z-10">
-          <div className="text-center mb-8">
-             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center mx-auto mb-4 shadow-[0_0_30px_rgba(16,185,129,0.3)]">
-               <BookOpen className="w-6 h-6 text-white" />
-             </div>
-             <h1 className="text-3xl font-bold font-heading text-white tracking-tight">Join Scholars AI</h1>
-             <p className="text-text-secondary mt-2">Create your academic workspace</p>
-          </div>
+      <div className="w-full max-w-md relative z-10">
+        
+        <div className="flex flex-col items-center text-center mb-10 animate-fade-in">
+           <div className="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-2xl mb-6">
+              <Sparkles className="w-8 h-8 text-white" />
+           </div>
+           <h1 className="text-3xl font-black text-white tracking-tighter uppercase italic">ScholarMind <span className="text-indigo-500">AI</span></h1>
+           <p className="text-slate-400 text-sm font-medium mt-2">Create Your Professional Academic ID</p>
+        </div>
 
-          <div className="glass p-8 rounded-2xl border border-[var(--border-color)] shadow-2xl backdrop-blur-xl">
-             {error && (
-               <div className="mb-6 p-3 bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-lg text-center">
-                 {error}
-               </div>
-             )}
-             
-             <form onSubmit={handleRegister} className="space-y-4">
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                 <div className="space-y-1">
-                   <label className="text-sm font-medium text-text-secondary pl-1">Full Name</label>
-                   <div className="relative">
-                     <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary/50" />
-                     <input 
-                       type="text" 
-                       name="name"
-                       required
-                       className="input-field pl-10 bg-black/20 focus:bg-black/40 h-11"
-                       placeholder="Dr. Jane Doe"
-                       value={formData.name}
-                       onChange={handleChange}
-                     />
-                   </div>
+        <div className="glass-card bg-white/5 border-white/10 p-10 shadow-2xl animate-slide-up">
+           <form onSubmit={handleRegister} className="space-y-6">
+              <div className="space-y-2">
+                 <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Full Name</label>
+                 <div className="relative group">
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+                    <input 
+                      type="text" 
+                      required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Kailash Chandra"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl py-3.5 pl-12 pr-4 text-white text-sm focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all"
+                    />
                  </div>
-                 
-                 <div className="space-y-1">
-                   <label className="text-sm font-medium text-text-secondary pl-1">Institution</label>
-                   <div className="relative">
-                     <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary/50" />
-                     <input 
-                       type="text" 
-                       name="institution"
-                       className="input-field pl-10 bg-black/20 focus:bg-black/40 h-11"
-                       placeholder="University Name"
-                       value={formData.institution}
-                       onChange={handleChange}
-                     />
-                   </div>
-                 </div>
-               </div>
+              </div>
 
-               <div className="space-y-1">
-                 <label className="text-sm font-medium text-text-secondary pl-1">Academic Email</label>
-                 <div className="relative">
-                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary/50" />
-                   <input 
-                     type="email" 
-                     name="email"
-                     required
-                     className="input-field pl-10 bg-black/20 focus:bg-black/40 h-11"
-                     placeholder="researcher@university.edu"
-                     value={formData.email}
-                     onChange={handleChange}
-                   />
+              <div className="space-y-2">
+                 <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Email Address</label>
+                 <div className="relative group">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+                    <input 
+                      type="email" 
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="kailash@scholarmind.ai"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl py-3.5 pl-12 pr-4 text-white text-sm focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all"
+                    />
                  </div>
-               </div>
+              </div>
 
-               <div className="space-y-1">
-                 <label className="text-sm font-medium text-text-secondary pl-1">Password</label>
-                 <div className="relative">
-                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary/50" />
-                   <input 
-                     type="password" 
-                     name="password"
-                     required
-                     className="input-field pl-10 bg-black/20 focus:bg-black/40 h-11 font-mono"
-                     placeholder="••••••••"
-                     value={formData.password}
-                     onChange={handleChange}
-                   />
+              <div className="space-y-2">
+                 <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Password</label>
+                 <div className="relative group">
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+                    <input 
+                      type="password" 
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl py-3.5 pl-12 pr-4 text-white text-sm focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all"
+                    />
                  </div>
-               </div>
+              </div>
 
-               <button 
-                 type="submit"
-                 disabled={isSubmitting || !formData.email || !formData.password || !formData.name}
-                 className="w-full btn bg-gradient-to-r from-emerald-500 to-teal-600 text-white h-12 text-lg mt-6 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
-               >
-                 {isSubmitting ? (
-                   <><Loader2 className="w-5 h-5 animate-spin" /> Creating Account...</>
+              <button 
+                type="submit" 
+                disabled={isLoading}
+                className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs uppercase tracking-[0.2em] py-4 rounded-xl shadow-xl shadow-indigo-900/40 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+              >
+                 {isLoading ? (
+                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                  ) : (
-                   'Create Account'
+                   <>Create Account <ArrowRight className="w-4 h-4" /></>
                  )}
-               </button>
-             </form>
+              </button>
+           </form>
 
-             <div className="mt-6 text-center text-text-secondary text-sm">
-               Already have an account? <Link href="/login" className="text-white hover:text-emerald-400 font-medium transition-colors">Sign in here</Link>
-             </div>
-          </div>
-       </div>
+           <div className="mt-8 pt-8 border-t border-white/5 text-center">
+              <p className="text-xs text-slate-500 font-medium">
+                 Already have a Professional ID? <Link href="/login" className="text-indigo-400 font-bold hover:underline">Sign In</Link>
+              </p>
+           </div>
+        </div>
+
+        {/* Feature Highlights */}
+        <div className="mt-12 grid grid-cols-3 gap-6 text-center">
+           <div className="space-y-2">
+              <ShieldCheck className="w-5 h-5 text-indigo-500 mx-auto" />
+              <p className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Privacy Protected</p>
+           </div>
+           <div className="space-y-2">
+              <Globe className="w-5 h-5 text-purple-500 mx-auto" />
+              <p className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Global Network</p>
+           </div>
+           <div className="space-y-2">
+              <Zap className="w-5 h-5 text-amber-500 mx-auto" />
+              <p className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Instant Setup</p>
+           </div>
+        </div>
+
+      </div>
     </div>
   );
 }

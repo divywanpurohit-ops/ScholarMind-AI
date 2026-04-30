@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   Sparkles, Search, FileText, Languages, 
@@ -13,6 +13,13 @@ import {
 
 export default function SimplifiedPremiumDashboard() {
   const [activeCategory, setActiveCategory] = useState('academic');
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) return null;
 
   const categories = [
     { id: 'academic', label: 'Academic Research', icon: GraduationCap, color: 'text-blue-600', bg: 'bg-blue-50' },
@@ -244,4 +251,4 @@ function GraduationCap(props) {
   return <GraduationCapIcon {...props} />;
 }
 
-import { GraduationCap as GraduationCapIcon, Layers, Download, CheckCircle, UserCheck, Play, Layout, Infinity } from 'lucide-react';
+import { GraduationCap as GraduationCapIcon, Layers, Download, CheckCircle, UserCheck, Play, Layout, Infinity, FileCode } from 'lucide-react';
