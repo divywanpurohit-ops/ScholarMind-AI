@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { 
   Sparkles, Mail, Lock, ChevronRight, 
   ArrowRight, ShieldCheck, Globe, Zap, 
-  Fingerprint, Github, Chrome
+  Fingerprint, Globe, ShieldCheck, Zap
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -95,10 +95,10 @@ export default function LoginPage() {
               <p className="text-center text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Or continue with</p>
               <div className="grid grid-cols-2 gap-4">
                  <button className="flex items-center justify-center gap-2 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-[10px] font-bold hover:bg-white/10 transition-all">
-                    <Chrome className="w-4 h-4" /> Google
+                    <Globe className="w-4 h-4" /> Google
                  </button>
                  <button className="flex items-center justify-center gap-2 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-[10px] font-bold hover:bg-white/10 transition-all">
-                    <Github className="w-4 h-4" /> GitHub
+                    <ShieldCheck className="w-4 h-4" /> GitHub
                  </button>
               </div>
            </div>

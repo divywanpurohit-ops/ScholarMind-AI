@@ -244,4 +244,4 @@ function GraduationCap(props) {
   return <GraduationCapIcon {...props} />;
 }
 
-import { GraduationCap as GraduationCapIcon, Layers, Download, CheckCircle, UserCheck } from 'lucide-react';
+import { GraduationCap as GraduationCapIcon, Layers, Download, CheckCircle, UserCheck, Play, Layout, Infinity } from 'lucide-react';
