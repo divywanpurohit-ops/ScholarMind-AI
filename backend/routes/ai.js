@@ -4,7 +4,7 @@ const auth = require('../middleware/authMiddleware');
 const openaiService = require('../services/openaiService');
 
 // Translation Endpoint
-router.post('/translate', auth, async (req, res) => {
+router.post('/translate', async (req, res) => {
   try {
     const { text, targetLanguage } = req.body;
     
@@ -24,7 +24,7 @@ router.post('/translate', auth, async (req, res) => {
 });
 
 // Mock Summarization Endpoint
-router.post('/summarize', auth, async (req, res) => {
+router.post('/summarize', async (req, res) => {
   try {
     const { text } = req.body;
     await new Promise(resolve => setTimeout(resolve, 1500));
@@ -38,7 +38,7 @@ router.post('/summarize', auth, async (req, res) => {
   }
 });
 // PPT Generation
-router.post('/generate-ppt', auth, async (req, res) => {
+router.post('/generate-ppt', async (req, res) => {
   try {
     const { topic, structure, style, tone } = req.body;
     const slides = await openaiService.generatePPT(topic, structure, style, tone);
@@ -50,7 +50,7 @@ router.post('/generate-ppt', auth, async (req, res) => {
 });
 
 // Video Script Generation
-router.post('/generate-video', auth, async (req, res) => {
+router.post('/generate-video', async (req, res) => {
   try {
     const { prompt, style, audio } = req.body;
     const videoData = await openaiService.generateVideoScript(prompt, style, audio);
@@ -62,7 +62,7 @@ router.post('/generate-video', auth, async (req, res) => {
 });
 
 // Visualization Generation
-router.post('/generate-visualization', auth, async (req, res) => {
+router.post('/generate-visualization', async (req, res) => {
   try {
     const { prompt, type } = req.body;
     const visualizationData = await openaiService.generateVisualizationData(prompt, type);
@@ -74,7 +74,7 @@ router.post('/generate-visualization', auth, async (req, res) => {
 });
 
 // Data Analysis
-router.post('/analyze-data', auth, async (req, res) => {
+router.post('/analyze-data', async (req, res) => {
   try {
     const { dataContext } = req.body;
     const analysis = await openaiService.analyzeData(dataContext);
@@ -86,7 +86,7 @@ router.post('/analyze-data', auth, async (req, res) => {
 });
 
 // Thesis Generation
-router.post('/generate-thesis', auth, async (req, res) => {
+router.post('/generate-thesis', async (req, res) => {
   try {
     const { chapterTitle, projectContext } = req.body;
     const content = await openaiService.generateThesisChapter(chapterTitle, projectContext);

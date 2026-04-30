@@ -33,7 +33,7 @@ export default function PPTSideBySide() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify({ topic, structure: 'Academic', style: 'Modern', tone: 'Professional' })
+        body: JSON.stringify({ topic, structure: 'Academic', style: 'Academic', tone: 'Professional' })
       });
       const data = await res.json();
       if (data.status === 'success') {

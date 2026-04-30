@@ -94,8 +94,8 @@ exports.generatePPT = async (topic, structure, style, tone) => {
     const response = await openai.chat.completions.create({
       model: "gpt-4-turbo-preview",
       messages: [
-        { role: "system", content: `You are an expert academic presentation creator. Generate a JSON array of slide objects. Each object must have 'title', 'subtitle' (optional), and 'content' (bullet points separated by newlines). Tone: ${tone}. Structure: ${structure}.` },
-        { role: "user", content: `Create a presentation about: ${topic}` }
+        { role: "system", content: `You are an expert academic presentation creator. Generate a JSON array of slide objects. Each object must have 'title', 'subtitle' (optional), and 'content' (bullet points separated by newlines). Use a strictly ${style} and formal ${tone} style suitable for a ${structure} context.` },
+        { role: "user", content: `Create a professional academic presentation about: ${topic}` }
       ],
       response_format: { type: "json_object" },
       temperature: 0.7,
