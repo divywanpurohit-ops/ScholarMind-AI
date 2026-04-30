@@ -31,8 +31,7 @@ export default function VideoSideBySide() {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/ai/generate-video`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ prompt, style: 'Cinematic', audio: 'Professional' })
       });
@@ -143,11 +142,13 @@ export default function VideoSideBySide() {
         <div className="flex-1 flex flex-col gap-6 min-h-0 overflow-hidden">
            <div className="flex-1 solid-card bg-slate-950 overflow-hidden flex flex-col shadow-2xl relative border-none group">
               {!videoReady ? (
-                 <div className="flex-1 flex flex-col items-center justify-center text-center p-10 opacity-30 gap-6">
-                    <MonitorPlay className="w-20 h-20 text-white" />
-                    <p className="text-xl font-bold text-white tracking-widest uppercase">{isGenerating ? 'Rendering Pipeline...' : 'Pipeline Ready'}</p>
+                  <div className="flex-1 flex flex-col items-center justify-center text-center p-10 opacity-30 gap-6">
+                     <MonitorPlay className="w-20 h-20 text-white" />
+                     <div className="space-y-2">
+                        <p className="text-xl font-bold text-white tracking-widest uppercase">{isGenerating ? 'Rendering Pipeline...' : 'Pipeline Ready'}</p>
                         {isGenerating && <p className="text-orange-500 font-mono text-xs uppercase animate-pulse">Estimated Time: {estimatedTime}</p>}
-                 </div>
+                     </div>
+                  </div>
               ) : (
                  <div className="flex-1 flex flex-col min-h-0 overflow-hidden bg-gradient-to-br from-slate-900 to-black relative">
                     <div className="flex-1 overflow-y-auto custom-scrollbar p-12">

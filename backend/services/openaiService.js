@@ -238,6 +238,44 @@ exports.generateVisualizationData = async (prompt, type) => {
 };
 
 /**
+ * Humanizes AI-generated text.
+ */
+exports.humanizeText = async (text) => {
+  if (!openai) {
+    console.warn('[OpenAI Service] No API Key found. Using mock Humanize.');
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    return text + "\n\n[Humanized by ScholarMind AI: Text adjusted for natural flow and variance.]";
+  }
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4-turbo-preview",
+      messages: [
+        { role: "system", content: "You are an expert academic editor. Rewrite the following text to make it sound more human, natural, and bypass AI detectors while maintaining formal academic tone." },
+        { role: "user", content: text }
+      ],
+      temperature: 0.8,
+    });
+    return response.choices[0].message.content;
+  } catch (error) {
+    console.error('[OpenAI Service Error]', error);
+    throw new Error('Humanize failed');
+  }
+};
+
+/**
+ * Generates a voice narration for text.
+ */
+exports.generateVoice = async (text) => {
+  // In a real app, this would use OpenAI TTS API
+  await new Promise(resolve => setTimeout(resolve, 1500));
+  return {
+    audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+    status: 'success'
+  };
+};
+
+/**
  * Searches for academic papers based on query.
  */
 exports.searchPapers = async (query) => {

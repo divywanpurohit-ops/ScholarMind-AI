@@ -30,8 +30,7 @@ export default function PPTSideBySide() {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/ai/generate-ppt`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ topic, structure: 'Academic', style: 'Academic', tone: 'Professional' })
       });
@@ -128,13 +127,23 @@ export default function PPTSideBySide() {
                          </div>
                       )}
 
-                      {pocket.id === 'style' && (
-                         <div className="flex gap-2">
-                            <div className="w-8 h-8 rounded-full bg-emerald-500 ring-2 ring-emerald-100 cursor-pointer"></div>
-                            <div className="w-8 h-8 rounded-full bg-indigo-500 cursor-pointer"></div>
-                            <div className="w-8 h-8 rounded-full bg-slate-800 cursor-pointer"></div>
-                         </div>
-                      )}
+                       {pocket.id === 'style' && (
+                          <div className="flex flex-col gap-3">
+                             <div className="flex gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-emerald-500 ring-4 ring-emerald-100 cursor-pointer shadow-lg" title="Academic Green"></div>
+                                <div className="w-10 h-10 rounded-xl bg-indigo-500 cursor-pointer hover:ring-4 hover:ring-indigo-100 transition-all" title="University Blue"></div>
+                                <div className="w-10 h-10 rounded-xl bg-slate-800 cursor-pointer hover:ring-4 hover:ring-slate-100 transition-all" title="Professional Dark"></div>
+                             </div>
+                             <div className="space-y-2">
+                                <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Font Scale</h4>
+                                <div className="flex gap-2">
+                                   {['14px', '16px', '18px'].map(size => (
+                                      <button key={size} className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-[10px] font-bold text-slate-600 hover:border-emerald-500">{size}</button>
+                                   ))}
+                                </div>
+                             </div>
+                          </div>
+                       )}
 
                       {pocket.id === 'tone' && (
                          <div className="flex flex-wrap gap-2">

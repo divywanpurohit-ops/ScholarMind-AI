@@ -120,4 +120,28 @@ router.post('/audit-research', async (req, res) => {
   }
 });
 
+// Humanize Text
+router.post('/humanize', async (req, res) => {
+  try {
+    const { text } = req.body;
+    const humanizedText = await openaiService.humanizeText(text);
+    res.json({ humanizedText, status: 'success' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// Voice Generation
+router.post('/voice', async (req, res) => {
+  try {
+    const { text } = req.body;
+    const voiceData = await openaiService.generateVoice(text);
+    res.json({ voiceData, status: 'success' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 module.exports = router;

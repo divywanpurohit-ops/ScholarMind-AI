@@ -28,6 +28,26 @@ export default function WritingLab() {
     }, 2000);
   };
 
+  const handleHumanize = async () => {
+    if (!text) return;
+    setIsAnalyzing(true);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/ai/humanize`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text })
+      });
+      const data = await res.json();
+      if (data.status === 'success') {
+        setText(data.humanizedText);
+      }
+    } catch (error) {
+      console.error('Humanize failed', error);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
   return (
     <div className="animate-fade-in flex flex-col h-full w-full gap-8">
       
@@ -54,11 +74,11 @@ export default function WritingLab() {
         <div className="flex-1 flex flex-col gap-4 overflow-hidden">
            <div className="flex-1 solid-card bg-white flex flex-col overflow-hidden relative border-slate-200">
               <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/30">
-                 <div className="flex gap-4">
-                    {['Paraphrase', 'Humanize', 'Fix Grammar'].map((tool) => (
-                      <button key={tool} className="text-[10px] font-bold text-slate-400 hover:text-indigo-600 uppercase tracking-widest transition-all">{tool}</button>
-                    ))}
-                 </div>
+                  <div className="flex gap-4">
+                     <button onClick={() => {}} className="text-[10px] font-bold text-slate-400 hover:text-indigo-600 uppercase tracking-widest transition-all">Paraphrase</button>
+                     <button onClick={handleHumanize} className="text-[10px] font-bold text-indigo-600 hover:text-indigo-700 uppercase tracking-widest transition-all">Humanize ✨</button>
+                     <button onClick={() => {}} className="text-[10px] font-bold text-slate-400 hover:text-indigo-600 uppercase tracking-widest transition-all">Fix Grammar</button>
+                  </div>
                  <button onClick={() => setText('')} className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-400"><Trash2 className="w-4 h-4" /></button>
               </div>
               <textarea 
