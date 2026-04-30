@@ -14,6 +14,7 @@ export default function VideoSideBySide() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
   const [videoScript, setVideoScript] = useState(null);
+  const [estimatedTime, setEstimatedTime] = useState('');
 
   const pockets = [
     { id: 'script', label: 'Script & Concept', icon: Sliders },
@@ -25,6 +26,7 @@ export default function VideoSideBySide() {
   const handleGenerate = async () => {
     if (!prompt) return;
     setIsGenerating(true);
+    setEstimatedTime('~1-2 minutes');
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/ai/generate-video`, {
         method: 'POST',
@@ -143,7 +145,8 @@ export default function VideoSideBySide() {
               {!videoReady ? (
                  <div className="flex-1 flex flex-col items-center justify-center text-center p-10 opacity-30 gap-6">
                     <MonitorPlay className="w-20 h-20 text-white" />
-                    <p className="text-xl font-bold text-white tracking-widest uppercase">Pipeline Ready</p>
+                    <p className="text-xl font-bold text-white tracking-widest uppercase">{isGenerating ? 'Rendering Pipeline...' : 'Pipeline Ready'}</p>
+                        {isGenerating && <p className="text-orange-500 font-mono text-xs uppercase animate-pulse">Estimated Time: {estimatedTime}</p>}
                  </div>
               ) : (
                  <div className="flex-1 flex flex-col min-h-0 overflow-hidden bg-gradient-to-br from-slate-900 to-black relative">

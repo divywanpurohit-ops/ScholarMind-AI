@@ -13,38 +13,26 @@ export default function AcademicSearch() {
   const [isSearching, setIsSearching] = useState(false);
   const [results, setResults] = useState(null);
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (!query) return;
     setIsSearching(true);
-    setTimeout(() => {
-      setResults([
-        { 
-          title: `Advanced Meta-Analysis of ${query}`, 
-          author: "Dr. A. Scholar et al.", 
-          journal: "Nature Communications", 
-          year: 2024, 
-          citations: 124,
-          abstract: "This study explores the foundational and emerging concepts in the field, providing a comprehensive overview of recent advancements and future directions."
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/ai/search-papers`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
         },
-        { 
-          title: `Empirical Evidence in ${query} Research`, 
-          author: "Prof. J. Doe", 
-          journal: "Journal of Biochemistry", 
-          year: 2023, 
-          citations: 89,
-          abstract: "A deep dive into the experimental methodologies and results that have shaped our understanding of this specific domain over the last decade."
-        },
-        { 
-          title: `Emerging Trends in ${query}`, 
-          author: "M. Smith", 
-          journal: "IEEE Xplore", 
-          year: 2024, 
-          citations: 45,
-          abstract: "Highlighting the latest technological and theoretical shifts, this paper identifies key gaps for future researchers to explore."
-        }
-      ]);
+        body: JSON.stringify({ query })
+      });
+      const data = await res.json();
+      if (data.status === 'success') {
+        setResults(data.results);
+      }
+    } catch (error) {
+      console.error('Search failed', error);
+    } finally {
       setIsSearching(false);
-    }, 2000);
+    }
   };
 
   return (

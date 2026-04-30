@@ -92,6 +92,29 @@ router.post('/generate-thesis', async (req, res) => {
     const content = await openaiService.generateThesisChapter(chapterTitle, projectContext);
     res.json({ content, status: 'success' });
   } catch (err) {
+    res.status(500).send('Server Error');
+  }
+});
+
+// Academic Search
+router.post('/search-papers', async (req, res) => {
+  try {
+    const { query } = req.body;
+    const results = await openaiService.searchPapers(query);
+    res.json({ results, status: 'success' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// Research Audit (Gaps/Contradictions)
+router.post('/audit-research', async (req, res) => {
+  try {
+    const { topic } = req.body;
+    const report = await openaiService.auditResearch(topic);
+    res.json({ report, status: 'success' });
+  } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
   }

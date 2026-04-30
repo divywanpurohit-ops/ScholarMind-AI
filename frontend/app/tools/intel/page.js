@@ -15,19 +15,26 @@ export default function ResearchIntelLab() {
   const [isAuditing, setIsAuditing] = useState(false);
   const [report, setReport] = useState(null);
 
-  const handleAudit = () => {
+  const handleAudit = async () => {
     if (!topic) return;
     setIsAuditing(true);
-    setTimeout(() => {
-      setReport({
-        noveltyScore: 92,
-        contradictions: 2,
-        gapsFound: 4,
-        citationsNeeded: 12,
-        validity: 'High'
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/ai/audit-research`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ topic })
       });
+      const data = await res.json();
+      if (data.status === 'success') {
+        setReport(data.report);
+      }
+    } catch (error) {
+      console.error('Audit failed', error);
+    } finally {
       setIsAuditing(false);
-    }, 2500);
+    }
   };
 
   const auditPockets = [

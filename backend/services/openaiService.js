@@ -236,3 +236,82 @@ exports.generateVisualizationData = async (prompt, type) => {
     throw new Error('Visualization generation failed');
   }
 };
+
+/**
+ * Searches for academic papers based on query.
+ */
+exports.searchPapers = async (query) => {
+  if (!openai) {
+    console.warn('[OpenAI Service] No API Key found. Using mock Paper Search.');
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    return [
+      { 
+        title: `Advanced Meta-Analysis of ${query}`, 
+        author: "Dr. A. Scholar et al.", 
+        journal: "Nature Communications", 
+        year: 2024, 
+        citations: 124,
+        abstract: "This study explores the foundational and emerging concepts in the field, providing a comprehensive overview."
+      },
+      { 
+        title: `Empirical Evidence in ${query} Research`, 
+        author: "Prof. J. Doe", 
+        journal: "Journal of Biochemistry", 
+        year: 2023, 
+        citations: 89,
+        abstract: "A deep dive into the experimental methodologies and results that have shaped our understanding."
+      }
+    ];
+  }
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4-turbo-preview",
+      messages: [
+        { role: "system", content: "You are an expert academic librarian. Search and return a JSON object with a 'results' array of 5 realistic (not necessarily real) academic papers. Each must have: title, author, journal, year (number), citations (number), abstract." },
+        { role: "user", content: `Search for papers about: ${query}` }
+      ],
+      response_format: { type: "json_object" },
+    });
+    return JSON.parse(response.choices[0].message.content).results;
+  } catch (error) {
+    console.error('[OpenAI Service Error]', error);
+    throw new Error('Search failed');
+  }
+};
+
+/**
+ * Audits research for gaps, contradictions, and novelty.
+ */
+exports.auditResearch = async (topic) => {
+  if (!openai) {
+    console.warn('[OpenAI Service] No API Key found. Using mock Audit.');
+    await new Promise(resolve => setTimeout(resolve, 2500));
+    return {
+      noveltyScore: 92,
+      contradictions: 2,
+      gapsFound: 4,
+      citationsNeeded: 12,
+      validity: 'High',
+      findings: [
+        { type: 'contradiction', text: 'Inconsistent with Nature 2024 (Conflict ID: 42)' },
+        { type: 'gap', text: 'Unexplored Demographic: Southeast Asia' }
+      ]
+    };
+  }
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4-turbo-preview",
+      messages: [
+        { role: "system", content: "You are a senior academic auditor. Return a JSON object with: noveltyScore (number), contradictions (number), gapsFound (number), citationsNeeded (number), validity (string), and a 'findings' array of objects with {type: 'contradiction'|'gap', text}." },
+        { role: "user", content: `Audit this research context: ${topic}` }
+      ],
+      response_format: { type: "json_object" },
+    });
+    return JSON.parse(response.choices[0].message.content);
+  } catch (error) {
+    console.error('[OpenAI Service Error]', error);
+    throw new Error('Audit failed');
+  }
+};
