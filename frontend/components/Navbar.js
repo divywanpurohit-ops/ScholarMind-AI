@@ -96,8 +96,4 @@ export default function Navbar() {
   );
 }
 
-// Icon fallbacks
-function Languages(props) { return <span {...props}>🌐</span> }
-function Zap(props) { return <span {...props}>⚡</span> }
-function Video(props) { return <span {...props}>🎬</span> }
-function FileText(props) { return <span {...props}>📄</span> }
+

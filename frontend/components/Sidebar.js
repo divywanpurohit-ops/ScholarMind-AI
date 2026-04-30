@@ -138,6 +138,4 @@ export default function Sidebar() {
   );
 }
 
-// Placeholder for missing icons
-function PenTool(props) { return <span {...props}>✎</span> }
-function BookOpen(props) { return <span {...props}>📖</span> }
+
