@@ -1,114 +1,130 @@
 'use client';
 import { useState } from 'react';
-import { Mail, Lock, ArrowRight, Loader2, BookOpen } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { 
+  Sparkles, Mail, Lock, ChevronRight, 
+  ArrowRight, ShieldCheck, Globe, Zap, 
+  Fingerprint, Github, Chrome
+} from 'lucide-react';
 import Link from 'next/link';
 
-export default function Login() {
+export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
-    setError('');
-    setIsSubmitting(true);
-    
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      
-      const data = await res.json();
-      
-      if (!res.ok) throw new Error(data.error || 'Login failed');
-      
-      // Store token and redirect
-      localStorage.setItem('token', data.token);
-      window.location.href = '/';
-      
-    } catch (err) {
-      setError(err.message);
-      setIsSubmitting(false);
-    }
+    setIsLoading(true);
+    // Mock login delay
+    setTimeout(() => {
+      router.push('/');
+      setIsLoading(false);
+    }, 1500);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
-       {/* Background decorative elements */}
-       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
-       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div className="min-h-screen bg-[#0d1117] flex items-center justify-center p-6 relative overflow-hidden">
+      
+      {/* Dynamic Background Elements */}
+      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-indigo-600/10 rounded-full blur-[120px] -mr-96 -mt-96 animate-pulse"></div>
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[100px] -ml-48 -mb-48"></div>
 
-       <div className="w-full max-w-md animate-fade-in z-10">
-          <div className="text-center mb-10">
-             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center mx-auto mb-6 shadow-[0_0_40px_rgba(79,70,229,0.3)]">
-               <BookOpen className="w-8 h-8 text-white" />
-             </div>
-             <h1 className="text-4xl font-bold font-heading text-white tracking-tight">Scholars AI</h1>
-             <p className="text-text-secondary mt-2">Sign in to your academic workspace</p>
-          </div>
+      <div className="w-full max-w-md relative z-10">
+        
+        {/* Brand Header */}
+        <div className="flex flex-col items-center text-center mb-10 animate-fade-in">
+           <div className="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-2xl shadow-indigo-500/20 mb-6">
+              <Sparkles className="w-8 h-8 text-white" />
+           </div>
+           <h1 className="text-3xl font-black text-white tracking-tighter uppercase italic">ScholarMind <span className="text-indigo-500">AI</span></h1>
+           <p className="text-slate-400 text-sm font-medium mt-2">The Ultimate Academic Research Operating System</p>
+        </div>
 
-          <div className="glass p-8 rounded-2xl border border-[var(--border-color)] shadow-2xl backdrop-blur-xl">
-             {error && (
-               <div className="mb-6 p-3 bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-lg text-center">
-                 {error}
-               </div>
-             )}
-             
-             <form onSubmit={handleLogin} className="space-y-5">
-               <div className="space-y-1">
-                 <label className="text-sm font-medium text-text-secondary pl-1">Academic Email</label>
-                 <div className="relative">
-                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary/50" />
-                   <input 
-                     type="email" 
-                     required
-                     className="input-field pl-10 bg-black/20 focus:bg-black/40 h-12 text-lg"
-                     placeholder="researcher@university.edu"
-                     value={email}
-                     onChange={(e) => setEmail(e.target.value)}
-                   />
+        {/* Login Card */}
+        <div className="glass-card bg-white/5 border-white/10 p-10 shadow-2xl animate-slide-up">
+           <form onSubmit={handleLogin} className="space-y-6">
+              <div className="space-y-2">
+                 <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Email Address</label>
+                 <div className="relative group">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+                    <input 
+                      type="email" 
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="kailash@scholarmind.ai"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl py-3.5 pl-12 pr-4 text-white text-sm focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all"
+                    />
                  </div>
-               </div>
+              </div>
 
-               <div className="space-y-1">
-                 <div className="flex justify-between pl-1 pr-1">
-                   <label className="text-sm font-medium text-text-secondary">Password</label>
-                   <Link href="#" className="text-sm text-blue-400 hover:text-blue-300 transition-colors">Forgot?</Link>
+              <div className="space-y-2">
+                 <div className="flex items-center justify-between">
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Password</label>
+                    <a href="#" className="text-[9px] font-bold text-indigo-400 hover:text-indigo-300 uppercase tracking-widest">Forgot?</a>
                  </div>
-                 <div className="relative">
-                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary/50" />
-                   <input 
-                     type="password" 
-                     required
-                     className="input-field pl-10 bg-black/20 focus:bg-black/40 h-12 text-lg font-mono"
-                     placeholder="••••••••"
-                     value={password}
-                     onChange={(e) => setPassword(e.target.value)}
-                   />
+                 <div className="relative group">
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+                    <input 
+                      type="password" 
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl py-3.5 pl-12 pr-4 text-white text-sm focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all"
+                    />
                  </div>
-               </div>
+              </div>
 
-               <button 
-                 type="submit"
-                 disabled={isSubmitting || !email || !password}
-                 className="w-full btn bg-gradient-to-r from-blue-600 to-indigo-600 text-white h-12 text-lg mt-4 flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25 disabled:opacity-50 disabled:cursor-not-allowed group"
-               >
-                 {isSubmitting ? (
-                   <><Loader2 className="w-5 h-5 animate-spin" /> Authenticating...</>
+              <button 
+                type="submit" 
+                disabled={isLoading}
+                className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs uppercase tracking-[0.2em] py-4 rounded-xl shadow-xl shadow-indigo-900/40 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+              >
+                 {isLoading ? (
+                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                  ) : (
-                   <>Sign In <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></>
+                   <>Enter Command Center <ArrowRight className="w-4 h-4" /></>
                  )}
-               </button>
-             </form>
+              </button>
+           </form>
 
-             <div className="mt-8 text-center text-text-secondary">
-               Don't have an account? <Link href="/register" className="text-white hover:text-blue-400 font-medium transition-colors">Apply for Access</Link>
-             </div>
-          </div>
-       </div>
+           <div className="mt-8 pt-8 border-t border-white/5">
+              <p className="text-center text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Or continue with</p>
+              <div className="grid grid-cols-2 gap-4">
+                 <button className="flex items-center justify-center gap-2 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-[10px] font-bold hover:bg-white/10 transition-all">
+                    <Chrome className="w-4 h-4" /> Google
+                 </button>
+                 <button className="flex items-center justify-center gap-2 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-[10px] font-bold hover:bg-white/10 transition-all">
+                    <Github className="w-4 h-4" /> GitHub
+                 </button>
+              </div>
+           </div>
+        </div>
+
+        <p className="text-center mt-8 text-xs text-slate-500 font-medium">
+           Don't have an account? <Link href="/register" className="text-indigo-400 font-bold hover:underline">Create Professional ID</Link>
+        </p>
+
+        {/* Feature Highlights */}
+        <div className="mt-12 grid grid-cols-3 gap-6 text-center">
+           <div className="space-y-2">
+              <ShieldCheck className="w-5 h-5 text-indigo-500 mx-auto" />
+              <p className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Secure & Encrypted</p>
+           </div>
+           <div className="space-y-2">
+              <Globe className="w-5 h-5 text-purple-500 mx-auto" />
+              <p className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Global Discovery</p>
+           </div>
+           <div className="space-y-2">
+              <Zap className="w-5 h-5 text-amber-500 mx-auto" />
+              <p className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">AI Acceleration</p>
+           </div>
+        </div>
+
+      </div>
     </div>
   );
 }
