@@ -33,7 +33,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="w-[280px] dark-side-panel flex flex-col h-full z-50">
+    <aside className="w-[280px] dark-side-panel flex flex-col h-full z-50 flex-shrink-0">
       
       {/* Brand Header */}
       <div className="p-8 mb-4">

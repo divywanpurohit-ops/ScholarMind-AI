@@ -14,7 +14,7 @@ export default function DashboardShell({ children }) {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#f8fafc]">
+    <div className="flex flex-row h-screen w-full overflow-hidden bg-[#f8fafc]">
       {/* 1. Left Sidebar (Pixel-Perfect Dark Panel) */}
       <Sidebar />
       
@@ -24,7 +24,7 @@ export default function DashboardShell({ children }) {
         <Navbar />
         
         {/* Workspace Content + Right Panel Layout */}
-        <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex flex-row overflow-hidden">
           
           {/* Center Main Workspace */}
           <main className="flex-1 overflow-y-auto custom-scrollbar px-10 py-8 space-y-10">

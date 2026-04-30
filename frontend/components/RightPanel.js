@@ -26,7 +26,7 @@ export default function RightPanel() {
   ];
 
   return (
-    <aside className="w-[340px] border-l border-slate-100 bg-white overflow-y-auto custom-scrollbar p-6 space-y-8 hidden xl:block animate-fade-in">
+    <aside className="w-[340px] border-l border-slate-100 bg-white overflow-y-auto custom-scrollbar p-6 space-y-8 animate-fade-in flex-shrink-0">
       
       {/* 1. AI Assistant (Copilot) */}
       <div className="glass-card p-6 border-indigo-100 bg-indigo-50/30">
