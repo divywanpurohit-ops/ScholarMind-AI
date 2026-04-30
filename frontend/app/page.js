@@ -9,7 +9,8 @@ import {
   HelpCircle, Quote, BarChart3, Database, FileSearch,
   CheckCircle, Globe, Play, MousePointer2, Layout,
   Cpu, Rocket, Lock, Download, Layers, MessageSquare,
-  Star, Network, Library, PenTool, Infinity, ChevronDown
+  Star, Network, Library, PenTool, Infinity, ChevronDown,
+  FolderKanban
 } from 'lucide-react';
 
 export default function PremiumDashboard() {
