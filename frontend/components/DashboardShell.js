@@ -1,34 +1,42 @@
 'use client';
 import { usePathname } from 'next/navigation';
-import Navbar from '../components/Navbar';
-import Sidebar from '../components/Sidebar';
+import Sidebar from './Sidebar';
+import Navbar from './Navbar';
+import RightPanel from './RightPanel';
+import BottomToolStrip from './BottomToolStrip';
 
 export default function DashboardShell({ children }) {
   const pathname = usePathname();
-  const isAuthPage = pathname === '/login' || pathname === '/register';
+  const isAuthPage = pathname === '/login' || pathname === '/register' || pathname === '/splash';
 
   if (isAuthPage) {
-    return <>{children}</>;
+    return <div className="min-h-screen bg-[#0d1117]">{children}</div>;
   }
 
   return (
-    <div className="flex h-screen overflow-hidden p-4 gap-4 bg-[var(--bg-dashboard)]">
-      {/* Panel 1: Left Sidebar (Fixed Width, Rounded) */}
+    <div className="flex h-screen overflow-hidden bg-[#f8fafc]">
+      {/* 1. Left Sidebar (Pixel-Perfect Dark Panel) */}
       <Sidebar />
       
-      {/* Panel 2: Main Workspace (Takes remaining width) */}
-      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
-        
-        {/* Top Navbar (Sticky Glass) */}
+      {/* 2. Main Work Area (Scrollable) */}
+      <div className="flex-1 flex flex-col min-w-0 relative">
+        {/* Top Sticky Navbar */}
         <Navbar />
         
-        {/* Workspace Area */}
-        <main className="flex-1 overflow-y-auto custom-scrollbar pt-2">
-          <div className="w-full h-full">
+        {/* Workspace Content + Right Panel Layout */}
+        <div className="flex-1 flex overflow-hidden">
+          
+          {/* Center Main Workspace */}
+          <main className="flex-1 overflow-y-auto custom-scrollbar px-10 py-8 space-y-10">
             {children}
-          </div>
-        </main>
-        
+          </main>
+          
+          {/* 3. Right Sidebar (AI Copilot & Activity) */}
+          <RightPanel />
+        </div>
+
+        {/* 4. Global Tool Strip (Bottom) */}
+        <BottomToolStrip />
       </div>
     </div>
   );
